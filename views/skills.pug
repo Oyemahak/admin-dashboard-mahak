@@ -1,0 +1,37 @@
+//- views/skills.pug
+extends layout
+
+block content
+  h2 Skills Manager
+  form(method="POST", action="/admin/skills")
+    label(for="name") Skill Name:
+    input(type="text", name="name", required)
+
+    label(for="category") Category:
+    select(name="category", required)
+      option(value="Development") Development
+      option(value="Design & Tools") Design & Tools
+      option(value="Cloud & Databases") Cloud & Databases
+
+    button(type="submit") ➕ Add Skill
+
+  hr
+
+  h3 Existing Skills
+  if skills.length
+    table
+      thead
+        tr
+          th Name
+          th Category
+          th Actions
+      tbody
+        each skill in skills
+          tr
+            td= skill.name
+            td= skill.category
+            td
+              form(method="POST", action=`/admin/skills/delete/${skill._id}`)
+                button(type="submit") ❌ Delete
+  else
+    p No skills added yet.

@@ -1,0 +1,16 @@
+//- views/messages.pug
+extends layout
+
+block content
+  h2 Contact Form Submissions
+  if messages.length
+    each msg in messages
+      div.message-card
+        h3= msg.name
+        p 📧= msg.email
+        p 📝= msg.message
+        p.timestamp Submitted at: #{msg.timestamp.toLocaleString()}
+        form(method="POST", action=`/admin/messages/delete/${msg._id}`)
+          button(type="submit") 🗑️ Delete
+  else
+    p No messages received yet.

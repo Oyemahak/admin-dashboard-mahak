@@ -1,0 +1,18 @@
+//- views/layout.pug
+doctype html
+html
+  head
+    title Admin Dashboard | Mahak
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="/styles.css")
+  body
+    header
+      h1 Admin CMS – Mahak
+      nav
+        ul
+          li: a(href="/") Dashboard
+          li: a(href="/admin/skills") Skills
+          li: a(href="/admin/messages") Messages
+    main
+      block content

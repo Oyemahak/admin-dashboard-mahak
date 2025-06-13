@@ -1,0 +1,30 @@
+{
+  "name": "admin-dashboard-mahak",
+  "version": "1.0.0",
+  "description": "Node.js Express Admin Dashboard with MongoDB for Skills and Contact Management",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Oyemahak/admin-dashboard-mahak.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Oyemahak/admin-dashboard-mahak/issues"
+  },
+  "homepage": "https://github.com/Oyemahak/admin-dashboard-mahak#readme",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.15.2",
+    "pug": "^3.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

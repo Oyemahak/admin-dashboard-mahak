@@ -1,0 +1,65 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #0f172a;
+  color: #f8fafc;
+  padding: 2rem;
+}
+
+header {
+  margin-bottom: 2rem;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  padding-left: 0;
+}
+
+a {
+  color: #7F5AF0;
+  text-decoration: none;
+}
+
+form {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+input, select, textarea, button {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+}
+
+button {
+  background-color: #2CB67D;
+  color: white;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  border: 1px solid #334155;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.message-card {
+  background: #1e293b;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+}
+
+.timestamp {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
