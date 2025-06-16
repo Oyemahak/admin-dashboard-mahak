@@ -3,6 +3,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors'; // ✅ Add this
 import path from 'path';
 import { fileURLToPath } from 'url';
 import adminRoutes from './routes/adminRoutes.js';
@@ -15,6 +16,11 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// ✅ Allow cross-origin requests from Vercel
+app.use(cors({
+  origin: 'https://mahak-patel.vercel.app',
+}));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
