@@ -1,4 +1,3 @@
-// models/skills.js
 import mongoose from 'mongoose';
 
 const skillSchema = new mongoose.Schema({
@@ -10,6 +9,14 @@ const skillSchema = new mongoose.Schema({
     type: String,
     enum: ['Development', 'Design & Tools', 'Cloud & Databases'],
     required: true,
+  },
+  icon: {
+    type: String,
+    required: true,
+  },
+  visible: {
+    type: Boolean,
+    default: true, // 👁 visible by default
   }
 });
 

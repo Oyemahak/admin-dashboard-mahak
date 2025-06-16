@@ -5,10 +5,10 @@ import Contact from '../models/contact.js';
 
 const router = express.Router();
 
-// 🧠 Get all skills
+// ✅ Get only visible skills
 router.get('/skills', async (req, res) => {
   try {
-    const skills = await Skill.find();
+    const skills = await Skill.find({ visible: true }); // ⬅️ Only visible skills
     res.json(skills);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch skills.' });

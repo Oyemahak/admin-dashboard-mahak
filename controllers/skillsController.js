@@ -12,11 +12,11 @@ export const getAllSkills = async (req, res) => {
   }
 };
 
-// CREATE a new skill
+// CREATE a new skill (now includes icon)
 export const createSkill = async (req, res) => {
-  const { name, category } = req.body;
+  const { name, category, icon } = req.body;
   try {
-    const newSkill = new Skill({ name, category });
+    const newSkill = new Skill({ name, category, icon });
     await newSkill.save();
     res.status(201).json({ message: 'Skill created', skill: newSkill });
   } catch (error) {

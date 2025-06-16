@@ -5,7 +5,16 @@ html
     title Admin Dashboard | Mahak
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
+
+    // Custom Admin CSS
     link(rel="stylesheet", href="/styles.css")
+
+    // ✅ Devicon Icons Support (for skill logos)
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css")
+
+    // Optional: FontAwesome (if needed for icons/buttons)
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+
   body
     header
       h1 Admin CMS – Mahak
@@ -14,5 +23,6 @@ html
           li: a(href="/") Dashboard
           li: a(href="/admin/skills") Skills
           li: a(href="/admin/messages") Messages
+
     main
       block content

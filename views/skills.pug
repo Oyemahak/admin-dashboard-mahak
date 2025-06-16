@@ -1,9 +1,10 @@
-//- views/skills.pug
 extends layout
 
 block content
   h2 Skills Manager
-  form(method="POST", action="/admin/skills")
+
+  // Add Skill Form
+  form(method="POST", action="/admin/skills", class="skill-form")
     label(for="name") Skill Name:
     input(type="text", name="name", required)
 
@@ -13,25 +14,82 @@ block content
       option(value="Design & Tools") Design & Tools
       option(value="Cloud & Databases") Cloud & Databases
 
-    button(type="submit") ➕ Add Skill
+    label(for="icon") Icon Class:
+    input(type="text", name="icon", placeholder="e.g. javascript-plain", required)
+
+    button(type="submit", class="btn btn-add") ➕ Add Skill
 
   hr
 
+  // Skills Table
   h3 Existing Skills
   if skills.length
-    table
+    table(class="skills-table")
       thead
         tr
+          th Icon
+          th Class Name
           th Name
           th Category
           th Actions
       tbody
         each skill in skills
           tr
+            td
+              i(class=`devicon-${skill.icon} colored skill-icon`)
+            td.code= skill.icon
             td= skill.name
             td= skill.category
             td
-              form(method="POST", action=`/admin/skills/delete/${skill._id}`)
-                button(type="submit") ❌ Delete
+              button(
+                type="button",
+                class="btn btn-delete",
+                onclick=`showModal("${skill._id}", "${skill.name}", "${skill.icon}")`
+              ) ❌ Delete
+              a(
+                href=`/admin/skills/edit/${skill._id}`,
+                class="btn btn-edit"
+              ) ✏️ Edit
+              form(method="POST", action=`/admin/skills/toggle/${skill._id}`, style="display:inline;")
+                button(
+                  type="submit",
+                  class=skill.visible ? "btn btn-hide" : "btn btn-unhide"
+                )= skill.visible ? " 🚫 Hide" : "👁 Unhide"
   else
     p No skills added yet.
+
+  // Modal for Delete Confirmation
+  .modal#delete-modal
+    .modal-box
+      h3
+        | Are you sure you want to delete 
+        span#modal-skill-name
+        | ?
+      form#deleteForm(method="POST")
+        .modal-actions
+          button(type="button", onclick="hideModal()", class="btn btn-cancel") Cancel
+          button(type="submit", class="btn btn-confirm-delete") Delete
+
+  // Scripts
+  script.
+    function showModal(id, name, icon) {
+      const modal = document.getElementById('delete-modal');
+      const nameSpan = document.getElementById('modal-skill-name');
+      const form = document.getElementById('deleteForm');
+      nameSpan.textContent = `"${name}"`;
+      form.action = `/admin/skills/delete/${id}`;
+      modal.style.display = 'flex';
+    }
+
+    function hideModal() {
+      document.getElementById('delete-modal').style.display = 'none';
+    }
+
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') hideModal();
+    });
+
+    window.addEventListener('click', function(e) {
+      const modal = document.getElementById('delete-modal');
+      if (e.target === modal) hideModal();
+    });

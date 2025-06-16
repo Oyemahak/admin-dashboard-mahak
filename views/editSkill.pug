@@ -1,0 +1,22 @@
+//- views/editSkill.pug
+extends layout
+
+block content
+  h2 Edit Skill
+
+  form(method="POST", action=`/admin/skills/edit/${skill._id}`)
+    label(for="name") Skill Name:
+    input(type="text", name="name", value=skill.name, required)
+
+    label(for="category") Category:
+    select(name="category", required)
+      option(value="Development", selected=skill.category==='Development') Development
+      option(value="Design & Tools", selected=skill.category==='Design & Tools') Design & Tools
+      option(value="Cloud & Databases", selected=skill.category==='Cloud & Databases') Cloud & Databases
+
+    label(for="icon") Icon Class:
+    input(type="text", name="icon", value=skill.icon, required)
+
+    button(type="submit") ✅ Update Skill
+
+    a(href="/admin/skills", style="margin-left: 10px;") ← Cancel

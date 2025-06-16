@@ -23,9 +23,9 @@ router.get('/admin/skills', async (req, res) => {
 
 // ➕ Add Skill (POST)
 router.post('/admin/skills', async (req, res) => {
-  const { name, category } = req.body;
+  const { name, category, icon } = req.body;
   try {
-    await Skill.create({ name, category });
+    await Skill.create({ name, category, icon }); // ✅ add icon
     res.redirect('/admin/skills');
   } catch (err) {
     res.status(400).send('Error creating skill');
@@ -50,6 +50,40 @@ router.get('/admin/messages', async (req, res) => {
     res.render('messages', { messages });
   } catch (err) {
     res.status(500).send('Error loading messages');
+  }
+});
+
+// 📝 Edit Skill (GET form)
+router.get('/admin/skills/edit/:id', async (req, res) => {
+  try {
+    const skill = await Skill.findById(req.params.id);
+    if (!skill) return res.status(404).send('Skill not found');
+    res.render('editSkill', { skill });
+  } catch (err) {
+    res.status(500).send('Error loading skill for editing');
+  }
+});
+
+// 🔄 Update Skill (POST)
+router.post('/admin/skills/edit/:id', async (req, res) => {
+  const { name, category, icon } = req.body;
+  try {
+    await Skill.findByIdAndUpdate(req.params.id, { name, category, icon });
+    res.redirect('/admin/skills');
+  } catch (err) {
+    res.status(500).send('Error updating skill');
+  }
+});
+
+// 👁 Toggle Skill Visibility (Hide/Unhide)
+router.post('/admin/skills/toggle/:id', async (req, res) => {
+  try {
+    const skill = await Skill.findById(req.params.id);
+    skill.visible = !skill.visible;
+    await skill.save();
+    res.redirect('/admin/skills');
+  } catch (err) {
+    res.status(500).send('Error toggling visibility');
   }
 });
 
