@@ -1,4 +1,3 @@
-// models/contact.js
 import mongoose from 'mongoose';
 
 const contactSchema = new mongoose.Schema({
@@ -15,6 +14,14 @@ const contactSchema = new mongoose.Schema({
   message: {
     type: String,
     required: true,
+  },
+  adminComment: {
+    type: String,
+    default: ''
+  },
+  isTrashed: {
+    type: Boolean,
+    default: false
   },
   timestamp: {
     type: Date,

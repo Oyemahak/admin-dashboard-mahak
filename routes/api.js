@@ -19,7 +19,7 @@ router.get('/skills', async (req, res) => {
   }
 });
 
-// 📩 Submit a contact message and send email
+// 📩 Submit a contact message + save to DB + send pretty email
 router.post('/contact', async (req, res) => {
   try {
     const { name, email, message } = req.body;
@@ -32,7 +32,7 @@ router.post('/contact', async (req, res) => {
     const newMessage = new Contact({ name, email, message });
     await newMessage.save();
 
-    // ✅ Send email using Nodemailer
+    // ✅ Send HTML Email via Nodemailer
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -42,10 +42,19 @@ router.post('/contact', async (req, res) => {
     });
 
     const mailOptions = {
-      from: `"Portfolio Form" <${process.env.CONTACT_EMAIL}>`,
+      from: `"Portfolio Contact" <${process.env.CONTACT_EMAIL}>`,
       to: process.env.CONTACT_EMAIL,
-      subject: `📬 New message from ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+      subject: `📬 New Message from ${name}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2 style="color: #7F5AF0;">You've received a new contact form submission</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Message:</strong><br/>${message.replace(/\n/g, '<br/>')}</p>
+          <hr/>
+          <p style="font-size: 0.85em; color: #888;">This message was sent from your portfolio contact form.</p>
+        </div>
+      `,
     };
 
     await transporter.sendMail(mailOptions);

@@ -1,0 +1,26 @@
+//- views/messagesTrash.pug
+extends layout
+
+block content
+  h2 Trashed Messages ♻️
+
+  a(href="/admin/messages", class="btn btn-unhide", style="margin-bottom: 20px; display: inline-block;") ← Back to Inbox
+
+  if messages.length
+    each msg in messages
+      .message-card
+        h3= msg.name
+        h5 Email: #{msg.email}
+        h5 Message: #{msg.message}
+        if msg.adminComment
+          p Admin Comment: #{msg.adminComment}
+        p.timestamp Submitted at: #{msg.timestamp.toLocaleString()}
+
+        .message-actions
+          form(method="POST", action=`/admin/messages/trash/${msg._id}/restore`, style="display: inline-block; margin-right: 10px;")
+            button(type="submit", class="btn btn-hide") ♻️ Restore
+
+          form(method="POST", action=`/admin/messages/delete/${msg._id}`, onsubmit="return confirm('⚠️ Are you sure you want to permanently delete this message?');", style="display: inline-block;")
+            button(type="submit", class="btn btn-delete") 🧹 Delete Forever
+  else
+    p No trashed messages yet.

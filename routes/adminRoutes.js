@@ -77,21 +77,55 @@ router.post('/admin/skills/toggle/:id', async (req, res) => {
   }
 });
 
-// 📬 Contact Messages Page (GET)
+// 📬 Inbox (GET)
 router.get('/admin/messages', async (req, res) => {
   try {
-    const messages = await Contact.find().sort({ timestamp: -1 });
-    res.render('messages', { messages });
+    const messages = await Contact.find({ isTrashed: false }).sort({ timestamp: -1 });
+    const trashCount = await Contact.countDocuments({ isTrashed: true });
+    res.render('messages', { messages, showTrash: false, trashCount });
   } catch (err) {
     res.status(500).send('Error loading messages');
   }
 });
 
-// 🗑️ Delete Contact Message
+// 🗑 Trash View (GET)
+router.get('/admin/messages/trash', async (req, res) => {
+  try {
+    const messages = await Contact.find({ isTrashed: true }).sort({ timestamp: -1 });
+    const trashCount = await Contact.countDocuments({ isTrashed: true });
+    res.render('messages', { messages, showTrash: true, trashCount });
+  } catch (err) {
+    res.status(500).send('Error loading trash');
+  }
+});
+
+// 📝 Save Admin Comment
+router.post('/admin/messages/update/:id', async (req, res) => {
+  try {
+    await Contact.findByIdAndUpdate(req.params.id, {
+      adminComment: req.body.adminComment,
+    });
+    res.redirect('/admin/messages');
+  } catch (err) {
+    res.status(500).send('Error updating comment');
+  }
+});
+
+// ♻️ Move to Trash
+router.post('/admin/messages/trash/:id', async (req, res) => {
+  try {
+    await Contact.findByIdAndUpdate(req.params.id, { isTrashed: true });
+    res.redirect('/admin/messages');
+  } catch (err) {
+    res.status(500).send('Error moving to trash');
+  }
+});
+
+// ❌ Delete Forever (from Trash)
 router.post('/admin/messages/delete/:id', async (req, res) => {
   try {
     await Contact.findByIdAndDelete(req.params.id);
-    res.redirect('/admin/messages');
+    res.redirect('/admin/messages/trash');
   } catch (err) {
     res.status(500).send('Error deleting message');
   }

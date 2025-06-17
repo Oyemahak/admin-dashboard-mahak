@@ -1,16 +1,75 @@
-//- views/messages.pug
 extends layout
 
 block content
   h2 Contact Form Submissions
+
   if messages.length
     each msg in messages
       div.message-card
-        h3= msg.name
-        p 📧= msg.email
-        p 📝= msg.message
+        h3 Name: #{msg.name}
+        h5 Email: #{msg.email}
+        h5 Message: #{msg.message}
         p.timestamp Submitted at: #{msg.timestamp.toLocaleString()}
-        form(method="POST", action=`/admin/messages/delete/${msg._id}`)
-          button(type="submit") 🗑️ Delete
+
+        // 🔧 Admin comment (editable)
+        form(method="POST", action=`/admin/messages/update/${msg._id}`)
+          label(for="adminComment") Admin Comment:
+          textarea(name="adminComment", rows="2")= msg.adminComment || ''
+          button(type="submit", class="btn btn-edit") 💬 Save Comment
+
+        // 🗑️ Delete / Trash buttons
+        .message-actions
+          if msg.isTrashed
+            form(method="POST", action=`/admin/messages/delete/${msg._id}`, style="display:inline;")
+              button(type="submit", class="btn btn-delete") 🗑️ Delete Forever
+            a(href="/admin/messages", class="btn btn-cancel") ← Back to Inbox
+          else
+            button(
+              type="button",
+              class="btn btn-delete",
+              onclick=`showDeleteModal("${msg._id}", "${msg.name}")`
+            ) 🗑️ Move to Trash
+
   else
     p No messages received yet.
+
+  // 📁 Trash toggle with count
+  if showTrash === false
+    a(href="/admin/messages/trash", class="btn btn-unhide") 🗑️ View Trash (#{trashCount})
+  else
+    a(href="/admin/messages", class="btn btn-hide") 📥 Back to Inbox
+
+  // 🧼 Delete Modal Popup
+  .modal#delete-modal
+    .modal-box
+      h3
+        | Move this message from 
+        span#modal-message-name
+        | to trash?
+      form#deleteForm(method="POST")
+        .modal-actions
+          button(type="button", onclick="hideModal()", class="btn btn-cancel") Cancel
+          button(type="submit", class="btn btn-confirm-delete") Move to Trash
+
+  // ✅ Scripts
+  script.
+    function showDeleteModal(id, name) {
+      const modal = document.getElementById('delete-modal');
+      const nameSpan = document.getElementById('modal-message-name');
+      const form = document.getElementById('deleteForm');
+      nameSpan.textContent = `"${name}"`;
+      form.action = `/admin/messages/trash/${id}`;
+      modal.style.display = 'flex';
+    }
+
+    function hideModal() {
+      document.getElementById('delete-modal').style.display = 'none';
+    }
+
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') hideModal();
+    });
+    window.addEventListener('click', function(e) {
+      const modal = document.getElementById('delete-modal');
+      if (e.target === modal) hideModal();
+    });
