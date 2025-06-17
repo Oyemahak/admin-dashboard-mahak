@@ -17,9 +17,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Allow cross-origin requests from Vercel
+// ✅ Allow cross-origin requests from Vercel + Local
 app.use(cors({
-  origin: 'https://mahak-patel.vercel.app',
+  origin: ['https://mahak-patel.vercel.app', 'http://localhost:5173'],
 }));
 
 app.use(express.urlencoded({ extended: true }));

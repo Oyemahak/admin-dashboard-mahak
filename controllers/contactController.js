@@ -1,35 +1,63 @@
 // controllers/contactController.js
-
 import Contact from '../models/contact.js';
+import nodemailer from 'nodemailer';
 
-// GET all messages (for admin viewing)
+// ✅ Email transporter using Gmail
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.CONTACT_EMAIL,
+    pass: process.env.CONTACT_PASS
+  }
+});
+
+// GET all messages for admin
 export const getAllMessages = async (req, res) => {
   try {
-    const messages = await Contact.find().sort({ createdAt: -1 });
-    res.json(messages);
+    const messages = await Contact.find().sort({ timestamp: -1 });
+    res.render('messages', { messages });
   } catch (error) {
-    res.status(500).json({ message: 'Error retrieving messages', error });
+    res.status(500).send('Error retrieving messages');
   }
 };
 
-// CREATE a new message (from contact form)
+// POST - Submit contact form
 export const submitMessage = async (req, res) => {
   const { name, email, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'Please fill all fields.' });
+  }
+
   try {
     const newMessage = new Contact({ name, email, message });
     await newMessage.save();
-    res.status(201).json({ message: 'Message received!', data: newMessage });
+
+    // Send email notification to you
+    await transporter.sendMail({
+      from: `"Portfolio Contact Form" <${process.env.CONTACT_EMAIL}>`,
+      to: process.env.CONTACT_EMAIL,
+      subject: `📩 New Message from ${name}`,
+      html: `
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `,
+    });
+
+    res.status(201).json({ success: true, message: 'Message received!' });
   } catch (error) {
-    res.status(400).json({ message: 'Failed to submit message', error });
+    res.status(500).json({ error: 'Message failed. Try again later.' });
   }
 };
 
-// DELETE a message by ID
+// DELETE a message
 export const deleteMessage = async (req, res) => {
   try {
     await Contact.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Message deleted' });
+    res.redirect('/admin/messages');
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting message', error });
+    res.status(500).send('Error deleting message');
   }
 };
